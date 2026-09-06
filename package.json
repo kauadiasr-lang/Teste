@@ -1,0 +1,19 @@
+{
+  "name": "webgames-platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MVP de uma plataforma comunitaria de jogos HTML/CSS/JS, com jogos isolados em origem separada e sandbox de iframe.",
+  "scripts": {
+    "start": "node server/start.js",
+    "start:app": "node server/index.js",
+    "start:games": "node server/gameServer.js"
+  },
+  "dependencies": {
+    "adm-zip": "^0.6.0",
+    "express": "^4.21.2",
+    "multer": "^2.0.1"
+  },
+  "overrides": {
+    "qs": "^6.16.0"
+  }
+}

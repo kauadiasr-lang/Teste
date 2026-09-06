@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — WebGames</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a href="/" class="brand">&larr; WebGames</a>
+  <h1>Painel de moderação</h1>
+</header>
+<main class="container">
+  <p class="help-text">
+    Sem autenticação nesta versão MVP — antes de expor isto publicamente,
+    proteja com login de administrador.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Publicado em</th>
+        <th>Denúncias</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="admin-rows"></tbody>
+  </table>
+</main>
+<script src="/admin.js"></script>
+</body>
+</html>

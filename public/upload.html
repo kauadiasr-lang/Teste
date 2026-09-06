@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publicar jogo — WebGames</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a href="/" class="brand">&larr; WebGames</a>
+</header>
+<main class="container">
+  <div class="hero">
+    <div>
+      <h2>Publicar um jogo</h2>
+      <p>Envie um .zip com seu jogo em HTML/CSS/JS.</p>
+    </div>
+  </div>
+
+  <form id="upload-form" class="upload-form">
+    <label>
+      Título
+      <input type="text" name="title" maxlength="80" required>
+    </label>
+    <label>
+      Descrição
+      <textarea name="description" maxlength="500"></textarea>
+    </label>
+    <label>
+      Arquivo .zip
+      <input type="file" name="zip" accept=".zip" required>
+      <span class="help-text">
+        Requisitos: precisa ter um <code>index.html</code> na raiz do zip,
+        no máximo 50MB descomprimido, e só arquivos de jogo comuns (html,
+        css, js, imagens, áudio, fontes). Nada de scripts de servidor.
+      </span>
+    </label>
+    <div id="form-message"></div>
+    <button type="submit" class="btn">Publicar</button>
+  </form>
+</main>
+<script src="/upload.js"></script>
+</body>
+</html>
