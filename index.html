@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <title>Gênese Infinita</title>
+  <meta name="description" content="Um jogo de combinações infinitas: junte elementos e descubra como o universo, a vida e o conhecimento surgiram." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>♾️</text></svg>" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-emoji">♾️</span>
+        <div class="brand-text">
+          <h1>Gênese Infinita</h1>
+          <p>do Big Bang à consciência — combine para descobrir</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <span class="counter" id="contador">4 descobertos</span>
+        <button class="btn btn-ghost" id="btn-limpar-mesa" title="Remove tudo da mesa de trabalho">🧹 Limpar mesa</button>
+        <button class="btn btn-ghost btn-danger" id="btn-resetar" title="Apaga todo o progresso">♻️ Resetar</button>
+        <button class="btn btn-ghost" id="btn-toggle-sidebar" aria-label="Mostrar/ocultar itens">📚</button>
+      </div>
+    </header>
+
+    <div class="main">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-search">
+          <input type="text" id="busca" placeholder="🔍 Buscar elemento..." autocomplete="off" />
+        </div>
+        <div class="sidebar-list" id="lista-elementos" aria-label="Elementos descobertos"></div>
+      </aside>
+
+      <main class="board-wrap">
+        <div class="board" id="board">
+          <p class="board-hint" id="board-hint">
+            Arraste dois elementos aqui e solte um sobre o outro para combiná-los ✨<br />
+            Dica: tente <b>Água + Fogo</b>, ou vá fundo até chegar em <b>Newton + Maçã</b>.
+          </p>
+        </div>
+      </main>
+    </div>
+
+    <div class="toasts" id="toasts"></div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
