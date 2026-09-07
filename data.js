@@ -18,7 +18,7 @@ const ELEMENTOS = {
   ar:          { nome: "Ar",          emoji: "💨", tags: ["natureza", "ar"] },
 
   // ---- Tier 1 --------------------------------------------------------------
-  vapor:       { nome: "Vapor",       emoji: "🌬️", tags: ["natureza"] },
+  vapor:       { nome: "Vapor",       emoji: "🌬️", tags: ["natureza", "agua", "clima"] },
   lama:        { nome: "Lama",        emoji: "🟤", tags: ["natureza"] },
   nuvem:       { nome: "Nuvem",       emoji: "☁️", tags: ["natureza"] },
   lava:        { nome: "Lava",        emoji: "♨️", tags: ["natureza", "fogo", "geologia"] },
@@ -140,6 +140,8 @@ const RECEITAS_BRUTAS = [
   ["nuvem", "ar", "tempestade"],
   ["fogo", "montanha", "vulcao"],
   ["montanha", "vulcao", "cordilheira"],
+  // vapor aquecido move turbinas — a mesma ideia por trás da máquina a vapor
+  ["fogo", "vapor", "energia"],
 
   ["ceu", "lua", "noite"],
   ["energia", "poeira", "atomo"],
@@ -317,17 +319,44 @@ function gerarCombinacaoDesconhecida(idA, idB, obterElemento) {
   const tagsA = elA.tags || [];
   const tagsB = elB.tags || [];
 
+  // "natureza" é uma tag guarda-chuva compartilhada por quase tudo que é
+  // natural — não é um sinal forte de parentesco (Fogo e Vapor só têm ela
+  // em comum, mas fogo não tem nada a ver com colina ou litoral). Por isso:
+  // 1. se os dois têm alguma tag específica em comum (ex: "geologia"), usa
+  //    só essa — é o melhor sinal possível;
+  // 2. senão, usa o conjunto (união) das tags específicas dos DOIS lados —
+  //    assim o resultado herda um pouco do "temperamento" de cada
+  //    ingrediente (aqui, fogo + clima), em vez de cair num balaio genérico
+  //    de paisagens sem relação com nenhum dos dois;
+  // 3. só usa "natureza" pura se não sobrar mais nenhuma tag específica.
   const compartilhadas = tagsA.filter((t) => tagsB.includes(t));
-  let tagsParaBuscar = compartilhadas.length > 0
-    ? compartilhadas
-    : [...new Set([...tagsA, ...tagsB])];
+  const especificasCompartilhadas = compartilhadas.filter((t) => t !== "natureza");
 
-  // "natureza" é uma tag guarda-chuva; se algo mais específico também bate
-  // (geologia/clima/bioma...), prioriza o específico em vez do genérico
-  const especificas = tagsParaBuscar.filter((t) => t !== "natureza");
-  if (especificas.length > 0) tagsParaBuscar = especificas;
+  let tagsParaBuscar;
+  if (especificasCompartilhadas.length > 0) {
+    tagsParaBuscar = especificasCompartilhadas;
+  } else {
+    const uniao = [...new Set([...tagsA, ...tagsB])];
+    const especificasUniao = uniao.filter((t) => t !== "natureza");
+    tagsParaBuscar = especificasUniao.length > 0 ? especificasUniao : uniao;
+  }
 
   const nomesCurados = new Set(Object.values(ELEMENTOS).map((e) => e.nome));
+
+  // Evita contradições óbvias: se "fogo" faz parte da busca, nada gelado;
+  // se "agua" faz parte, nada em chamas. Sem isso o hash às vezes gera
+  // coisas tipo "fogo + vapor = geada", que é o oposto do que fogo faz.
+  const INCOMPATIVEIS_COM = {
+    fogo: new Set(["Geleira", "Geada", "Granizo", "Gelo", "Tundra"]),
+    agua: new Set(["Brasa", "Fogueira", "Combustão", "Magma"]),
+  };
+  function incompativel(nomeCandidato) {
+    for (const tag of tagsParaBuscar) {
+      const proibidos = INCOMPATIVEIS_COM[tag];
+      if (proibidos && proibidos.has(nomeCandidato)) return true;
+    }
+    return false;
+  }
 
   function montarPool(tags) {
     const candidatos = [];
@@ -335,7 +364,7 @@ function gerarCombinacaoDesconhecida(idA, idB, obterElemento) {
       const lista = POOLS_POR_TAG[tag];
       if (!lista) continue;
       for (const [nome, emoji] of lista) {
-        if (!nomesCurados.has(nome)) candidatos.push({ nome, emoji, tag });
+        if (!nomesCurados.has(nome) && !incompativel(nome)) candidatos.push({ nome, emoji, tag });
       }
     }
     return candidatos;
