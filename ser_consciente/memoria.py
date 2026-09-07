@@ -104,6 +104,29 @@ class MemoriaAssociativa:
             atual = prox
         return caminho
 
+    def reforcar(self, conceitos: List[str], peso: float = 0.5):
+        """Reforça conceitos já existentes, revisitados por um pensamento.
+
+        Diferente de `perceber`, não tokeniza texto novo -- só fortalece
+        conceitos que já estão na memória. Existe para que um pensamento
+        gerado por associação possa "ensaiar" o que já foi visto sem que
+        o esqueleto da frase que o expressa (ex.: "penso em", "considero")
+        vire, ele próprio, um novo conceito memorizado.
+        """
+        agora = time.time()
+        for nome in conceitos:
+            c = self.conceitos.get(nome)
+            if c is None:
+                continue
+            c.peso += peso
+            c.ultima_ativacao = agora
+        for i, p in enumerate(conceitos):
+            for q in conceitos[i + 1:]:
+                if p == q or p not in self.conceitos or q not in self.conceitos:
+                    continue
+                self.conceitos[p].conexoes[q] = self.conceitos[p].conexoes.get(q, 0.0) + peso
+                self.conceitos[q].conexoes[p] = self.conceitos[q].conexoes.get(p, 0.0) + peso
+
     def to_dict(self) -> dict:
         return {
             nome: {

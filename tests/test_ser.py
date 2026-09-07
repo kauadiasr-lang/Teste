@@ -63,6 +63,14 @@ class TestSer(unittest.TestCase):
         self.assertGreater(len(ser.memoria.conceitos), 0)
         self.assertGreater(len(ser.monologo), 0)
 
+    def test_pensar_nao_introduz_vocabulario_novo_do_molde(self):
+        ser = Ser()
+        ser.perceber("floresta verde vento suave folhas caem devagar")
+        conceitos_antes = set(ser.memoria.conceitos.keys())
+        ser.pensar()
+        conceitos_depois = set(ser.memoria.conceitos.keys())
+        self.assertTrue(conceitos_depois.issubset(conceitos_antes))
+
     def test_estado_atual_nao_quebra_sem_memoria(self):
         ser = Ser()
         texto = ser.estado_atual()

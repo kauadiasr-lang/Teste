@@ -8,6 +8,7 @@ reforçado, e o resultado é encaixado em um molde de frase.
 from __future__ import annotations
 
 import random
+from typing import List, Tuple
 
 from .corpo import EstadoInterno
 from .memoria import MemoriaAssociativa
@@ -27,7 +28,15 @@ _ABERTURAS_SOZINHO = [
 ]
 
 
-def gerar_pensamento(memoria: MemoriaAssociativa, estado: EstadoInterno) -> str:
+def gerar_pensamento(memoria: MemoriaAssociativa, estado: EstadoInterno) -> Tuple[str, List[str]]:
+    """Gera uma frase e devolve também o caminho de conceitos usado.
+
+    O caminho é devolvido separado da frase para que quem chama possa
+    reforçar exatamente esses conceitos na memória (`memoria.reforcar`)
+    sem precisar tokenizar o texto pronto -- que contém palavras do
+    molde ("penso em", "considero", "aparece junto") que não deveriam
+    virar conceitos por si só.
+    """
     caminho = memoria.caminhar(passos=2)
 
     if len(caminho) >= 2:
@@ -42,4 +51,4 @@ def gerar_pensamento(memoria: MemoriaAssociativa, estado: EstadoInterno) -> str:
     if estado.energia < 20:
         frase += " Estou cansado."
 
-    return frase
+    return frase, caminho

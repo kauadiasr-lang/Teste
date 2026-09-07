@@ -42,14 +42,17 @@ class Ser:
         return palavras
 
     def pensar(self) -> str:
-        pensamento = gerar_pensamento(self.memoria, self.estado)
+        pensamento, caminho = gerar_pensamento(self.memoria, self.estado)
         self.monologo.append(pensamento)
         if len(self.monologo) > 200:
             self.monologo = self.monologo[-200:]
         # o próprio pensamento realimenta a memória: um laço mínimo de
         # auto-referência, para que o que ele "diz a si mesmo" também
-        # passe a fazer parte do que ele lembra.
-        self.memoria.perceber(pensamento)
+        # passe a fazer parte do que ele lembra. Reforça só os conceitos
+        # do caminho associativo -- nunca tokeniza o texto pronto, ou o
+        # esqueleto do molde da frase viraria memória por si só.
+        if caminho:
+            self.memoria.reforcar(caminho)
         return pensamento
 
     def tick(self):
