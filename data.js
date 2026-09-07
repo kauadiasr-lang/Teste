@@ -21,26 +21,27 @@ const ELEMENTOS = {
   vapor:       { nome: "Vapor",       emoji: "🌬️", tags: ["natureza"] },
   lama:        { nome: "Lama",        emoji: "🟤", tags: ["natureza"] },
   nuvem:       { nome: "Nuvem",       emoji: "☁️", tags: ["natureza"] },
-  lava:        { nome: "Lava",        emoji: "🌋", tags: ["natureza", "fogo"] },
+  lava:        { nome: "Lava",        emoji: "♨️", tags: ["natureza", "fogo", "geologia"] },
   energia:     { nome: "Energia",     emoji: "🔆", tags: ["ciencia", "energia"] },
   poeira:      { nome: "Poeira",      emoji: "🌫️", tags: ["natureza", "cosmos"] },
   oceano:      { nome: "Oceano",      emoji: "🌊", tags: ["natureza", "agua"] },
   sol:         { nome: "Sol",         emoji: "☀️", tags: ["cosmos"] },
-  montanha:    { nome: "Montanha",    emoji: "⛰️", tags: ["natureza"] },
+  montanha:    { nome: "Montanha",    emoji: "⛰️", tags: ["natureza", "geologia"] },
   ceu:         { nome: "Céu",         emoji: "🌤️", tags: ["natureza", "cosmos"] },
 
   // ---- Tier 2 --------------------------------------------------------------
-  chuva:       { nome: "Chuva",       emoji: "🌧️", tags: ["natureza"] },
-  obsidiana:   { nome: "Obsidiana",   emoji: "🖤", tags: ["natureza", "material"] },
+  chuva:       { nome: "Chuva",       emoji: "🌧️", tags: ["natureza", "clima"] },
+  obsidiana:   { nome: "Obsidiana",   emoji: "🖤", tags: ["natureza", "material", "geologia"] },
   tijolo:      { nome: "Tijolo",      emoji: "🧱", tags: ["material", "humano"] },
-  pedra:       { nome: "Pedra",       emoji: "🪨", tags: ["natureza", "material"] },
-  areia:       { nome: "Areia",       emoji: "🏖️", tags: ["natureza", "material"] },
+  pedra:       { nome: "Pedra",       emoji: "🪨", tags: ["natureza", "material", "geologia"] },
+  areia:       { nome: "Areia",       emoji: "🏖️", tags: ["natureza", "material", "geologia"] },
   vidro:       { nome: "Vidro",       emoji: "🪟", tags: ["material", "humano"] },
   metal:       { nome: "Metal",       emoji: "⚙️", tags: ["material", "tecnologia"] },
   lua:         { nome: "Lua",         emoji: "🌙", tags: ["cosmos"] },
   estrela:     { nome: "Estrela",     emoji: "⭐", tags: ["cosmos"] },
   dia:         { nome: "Dia",         emoji: "🌞", tags: ["tempo", "cosmos"] },
-  tempestade:  { nome: "Tempestade",  emoji: "⛈️", tags: ["natureza"] },
+  tempestade:  { nome: "Tempestade",  emoji: "⛈️", tags: ["natureza", "clima"] },
+  vulcao:      { nome: "Vulcão",      emoji: "🌋", tags: ["natureza", "fogo", "geologia"] },
 
   // ---- Tier 3 --------------------------------------------------------------
   noite:       { nome: "Noite",       emoji: "🌃", tags: ["tempo", "cosmos"] },
@@ -56,9 +57,9 @@ const ELEMENTOS = {
   vida:        { nome: "Vida",        emoji: "🦠", tags: ["vida"] },
 
   // ---- Tier 6 --------------------------------------------------------------
-  planta:      { nome: "Planta",      emoji: "🌿", tags: ["vida", "natureza"] },
+  planta:      { nome: "Planta",      emoji: "🌿", tags: ["vida", "natureza", "bioma"] },
   peixe:       { nome: "Peixe",       emoji: "🐟", tags: ["vida"] },
-  arvore:      { nome: "Árvore",      emoji: "🌳", tags: ["vida", "natureza"] },
+  arvore:      { nome: "Árvore",      emoji: "🌳", tags: ["vida", "natureza", "bioma"] },
   evolucao:    { nome: "Evolução",    emoji: "🧬", tags: ["ciencia", "vida"] },
   macaco:      { nome: "Macaco",      emoji: "🐒", tags: ["vida"] },
 
@@ -98,7 +99,8 @@ const ELEMENTOS = {
   // ---- Tier 13: escala cósmica -----------------------------------------
   planeta:     { nome: "Planeta",     emoji: "🪐", tags: ["cosmos"] },
   buraconegro: { nome: "Buraco Negro",emoji: "🕳️", tags: ["cosmos", "ciencia"] },
-  ecossistema: { nome: "Ecossistema", emoji: "🐾", tags: ["vida", "natureza"] },
+  ecossistema: { nome: "Ecossistema", emoji: "🐾", tags: ["vida", "natureza", "bioma"] },
+  cordilheira: { nome: "Cordilheira", emoji: "🏔️", tags: ["natureza", "geologia"] },
 
   // ---- Tier 14: tecnologia moderna --------------------------------------
   robo:        { nome: "Robô",        emoji: "🤖", tags: ["tecnologia"] },
@@ -136,6 +138,8 @@ const RECEITAS_BRUTAS = [
   ["ceu", "fogo", "estrela"],
   ["sol", "terra", "dia"],
   ["nuvem", "ar", "tempestade"],
+  ["fogo", "montanha", "vulcao"],
+  ["montanha", "vulcao", "cordilheira"],
 
   ["ceu", "lua", "noite"],
   ["energia", "poeira", "atomo"],
@@ -203,10 +207,23 @@ for (const [a, b, resultado] of RECEITAS_BRUTAS) {
 // um conceito plausível a partir das tags em comum dos dois ingredientes.
 // ============================================================================
 const POOLS_POR_TAG = {
+  // "natureza" fica só com um punhado bem genérico — combinações entre
+  // elementos naturais preferem as categorias mais específicas abaixo
+  // (geologia/clima/bioma), pra não misturar coisas como vulcão com geleira.
   natureza: [
-    ["Rio", "🏞️"], ["Deserto", "🏜️"], ["Floresta", "🌲"], ["Geleira", "🧊"],
-    ["Cachoeira", "💦"], ["Pântano", "🐊"], ["Ilha", "🏝️"], ["Furacão", "🌀"],
-    ["Colina", "🌄"], ["Vulcão", "🌋"],
+    ["Ilha", "🏝️"], ["Colina", "🌄"], ["Litoral", "🏖️"], ["Oásis", "🌴"],
+  ],
+  geologia: [
+    ["Cratera", "🕳️"], ["Caverna", "🦇"], ["Gruta", "💎"], ["Magma", "🔥"],
+    ["Penhasco", "🗻"], ["Vale", "🏞️"], ["Duna", "🏜️"], ["Falha Geológica", "🧭"],
+  ],
+  clima: [
+    ["Geleira", "🧊"], ["Furacão", "🌀"], ["Neblina", "🌫️"], ["Geada", "❄️"],
+    ["Tornado", "🌪️"], ["Maré", "🌊"], ["Seca", "🥵"], ["Granizo", "🌨️"],
+  ],
+  bioma: [
+    ["Floresta", "🌲"], ["Deserto", "🏜️"], ["Pântano", "🐊"], ["Recife", "🪸"],
+    ["Savana", "🦁"], ["Selva", "🌴"], ["Tundra", "🐧"], ["Cachoeira", "💦"],
   ],
   cosmos: [
     ["Cometa", "☄️"], ["Nebulosa", "🌠"], ["Supernova", "💥"], ["Quasar", "🌟"],
@@ -286,6 +303,14 @@ function slugify(nome) {
 
 // Gera (de forma determinística) um novo elemento plausível a partir de
 // dois ingredientes que não têm receita escrita à mão.
+//
+// Duas regras importantes pra manter isso coerente com o tempo:
+// 1. As tags do resultado são as da categoria de onde a palavra veio (não
+//    as tags herdadas dos pais) — assim, se "Vulcão" fosse gerado por aqui,
+//    ele carregaria a tag "geologia" (a categoria certa), e não alguma tag
+//    sem relação nenhuma emprestada dos ingredientes que o criaram.
+// 2. Nunca escolhe um nome que já existe como elemento oficial da árvore
+//    principal, pra não criar dois elementos diferentes com o mesmo nome.
 function gerarCombinacaoDesconhecida(idA, idB, obterElemento) {
   const elA = obterElemento(idA);
   const elB = obterElemento(idB);
@@ -293,27 +318,45 @@ function gerarCombinacaoDesconhecida(idA, idB, obterElemento) {
   const tagsB = elB.tags || [];
 
   const compartilhadas = tagsA.filter((t) => tagsB.includes(t));
-  const tagsParaUsar = compartilhadas.length > 0 ? compartilhadas : [...tagsA, ...tagsB];
+  let tagsParaBuscar = compartilhadas.length > 0
+    ? compartilhadas
+    : [...new Set([...tagsA, ...tagsB])];
 
-  let pool = [];
-  for (const tag of tagsParaUsar) {
-    if (POOLS_POR_TAG[tag]) pool = pool.concat(POOLS_POR_TAG[tag]);
+  // "natureza" é uma tag guarda-chuva; se algo mais específico também bate
+  // (geologia/clima/bioma...), prioriza o específico em vez do genérico
+  const especificas = tagsParaBuscar.filter((t) => t !== "natureza");
+  if (especificas.length > 0) tagsParaBuscar = especificas;
+
+  const nomesCurados = new Set(Object.values(ELEMENTOS).map((e) => e.nome));
+
+  function montarPool(tags) {
+    const candidatos = [];
+    for (const tag of tags) {
+      const lista = POOLS_POR_TAG[tag];
+      if (!lista) continue;
+      for (const [nome, emoji] of lista) {
+        if (!nomesCurados.has(nome)) candidatos.push({ nome, emoji, tag });
+      }
+    }
+    return candidatos;
   }
+
+  let pool = montarPool(tagsParaBuscar);
   if (pool.length === 0) {
-    // fallback do fallback: mistura tudo
-    pool = Object.values(POOLS_POR_TAG).flat();
+    // fallback do fallback: qualquer categoria, ainda evitando nomes curados
+    pool = montarPool(Object.keys(POOLS_POR_TAG));
   }
 
   const chave = chaveReceita(idA, idB);
   const indice = hashString(chave) % pool.length;
-  const [nome, emoji] = pool[indice];
-  const id = "gerado_" + slugify(nome);
+  const escolhido = pool[indice];
+  const id = "gerado_" + slugify(escolhido.nome);
 
   return {
     id,
-    nome,
-    emoji,
-    tags: tagsParaUsar.length ? tagsParaUsar : ["abstrato"],
+    nome: escolhido.nome,
+    emoji: escolhido.emoji,
+    tags: [escolhido.tag],
     gerado: true,
   };
 }
