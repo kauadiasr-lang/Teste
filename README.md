@@ -31,6 +31,8 @@ mas funcionando de verdade:
   curiosidade sobem e descem em reação ao que é dito e ao passar do
   tempo, e influenciam o tom do que o ser produz. É homeostase de
   brinquedo, mas é real como mecanismo -- não é só um enfeite de texto.
+  A energia se recupera com o tempo real de ausência (descanso), não só
+  cai: quanto mais tempo passa sem interação, mais ela se restaura.
 - **Um laço de auto-referência** (`ser.py`, `reflexao.py`): os
   pensamentos gerados por associação na memória são, eles próprios,
   realimentados de volta na memória. O que o ser "pensa" passa a fazer

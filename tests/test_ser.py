@@ -1,10 +1,12 @@
 import os
 import sys
 import tempfile
+import time
 import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+from ser_consciente.corpo import EstadoInterno
 from ser_consciente.memoria import MemoriaAssociativa
 from ser_consciente.persistencia import carregar, salvar
 from ser_consciente.ser import Ser
@@ -31,6 +33,20 @@ class TestMemoriaAssociativa(unittest.TestCase):
         for _ in range(20):
             m.decair()
         self.assertNotIn("eco", m.conceitos)
+
+
+class TestEstadoInterno(unittest.TestCase):
+    def test_descanso_recupera_energia_com_o_tempo_real(self):
+        estado = EstadoInterno(energia=10.0)
+        estado.ultima_atualizacao = time.time() - 100  # 100s de ausência simulada
+        estado.tick()
+        # recupera 100s * 0.2/s = 20, menos o custo metabólico fixo de 0.5
+        self.assertAlmostEqual(estado.energia, 29.5, places=3)
+
+    def test_tick_sem_ausencia_nao_recupera_energia(self):
+        estado = EstadoInterno(energia=10.0)
+        estado.tick()
+        self.assertLess(estado.energia, 10.0)
 
 
 class TestSer(unittest.TestCase):

@@ -8,7 +8,8 @@ parecido com disposição e ritmo.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+import time
+from dataclasses import dataclass, field
 from typing import List
 
 _POSITIVAS = {
@@ -22,12 +23,19 @@ _NEGATIVAS = {
     "solidão", "perdido", "perdida",
 }
 
+# pontos de energia recuperados por segundo real de ausência: descansar
+# (o tempo passando sem que nada seja percebido) restaura energia, do
+# mesmo jeito que ouvir palavras a consome.
+_TAXA_RECUPERACAO_ENERGIA = 0.2
+_CUSTO_METABOLICO_TICK = 0.5
+
 
 @dataclass
 class EstadoInterno:
     energia: float = 100.0
     humor: float = 0.0
     curiosidade: float = 50.0
+    ultima_atualizacao: float = field(default_factory=time.time)
 
     def reagir_a(self, palavras: List[str]):
         for p in palavras:
@@ -39,9 +47,13 @@ class EstadoInterno:
         self.energia = max(0.0, self.energia - len(palavras) * 0.3)
 
     def tick(self):
-        self.energia = max(0.0, self.energia - 0.5)
+        agora = time.time()
+        ausencia = max(0.0, agora - self.ultima_atualizacao)
+        self.energia = min(100.0, self.energia + ausencia * _TAXA_RECUPERACAO_ENERGIA)
+        self.energia = max(0.0, self.energia - _CUSTO_METABOLICO_TICK)
         self.curiosidade = max(0.0, self.curiosidade - 0.8)
         self.humor *= 0.98
+        self.ultima_atualizacao = agora
 
     def descricao_humor(self) -> str:
         if self.humor > 0.5:
@@ -55,7 +67,12 @@ class EstadoInterno:
         return "pesado"
 
     def to_dict(self) -> dict:
-        return {"energia": self.energia, "humor": self.humor, "curiosidade": self.curiosidade}
+        return {
+            "energia": self.energia,
+            "humor": self.humor,
+            "curiosidade": self.curiosidade,
+            "ultima_atualizacao": self.ultima_atualizacao,
+        }
 
     @classmethod
     def from_dict(cls, dados: dict) -> "EstadoInterno":
@@ -63,4 +80,5 @@ class EstadoInterno:
             energia=dados.get("energia", 100.0),
             humor=dados.get("humor", 0.0),
             curiosidade=dados.get("curiosidade", 50.0),
+            ultima_atualizacao=dados.get("ultima_atualizacao", time.time()),
         )
