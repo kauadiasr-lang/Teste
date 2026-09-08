@@ -38,8 +38,23 @@ mas funcionando de verdade:
   realimentados de volta na memória. O que o ser "pensa" passa a fazer
   parte do que ele lembra -- uma forma mínima de recursividade sobre o
   próprio conteúdo mental.
+- **Aprendizado por feedback, com transições direcionadas**
+  (`memoria.py`, `aprendizado.py`): além da memória associativa (que não
+  tem noção de ordem), há uma segunda estrutura que guarda "que palavra
+  tende a vir logo depois de qual" -- e, sobre ela, o ser ocasionalmente
+  tenta gerar uma fala crua, sem molde de frase nenhum (`tentar_falar`),
+  que pode não fazer sentido algum. Corrigir com `/não` penaliza aquela
+  ordem específica; não corrigir conta como aceite implícito (mais
+  fraco). É aprendizado real -- a probabilidade de gerar aquela mesma
+  ordem de novo muda de verdade -- guiado inteiramente pelo seu
+  feedback, não por estatística passiva. O **diário de aprendizado**
+  (`/diario`) explica, em português simples, o que cada correção mudou
+  e por quê, inclusive o caso de perceber que "A antes de B" funciona
+  mas "B antes de A" não.
 
-Nada disso é consciência. É a parte que dá para construir com o que
+Nada disso é consciência, nem aprendizado de linguagem no sentido de um
+modelo de linguagem de verdade -- continua sendo estatística, só que
+agora corrigível por você. É a parte que dá para construir com o que
 sabemos, feita sem atalhos.
 
 ## Como rodar
@@ -50,7 +65,11 @@ python3 main.py
 
 Comandos durante a conversa: `/estado` (mostra idade, humor, energia,
 curiosidade e memória), `/memoria` (lista os conceitos mais fortes),
-`/sair` (encerra e salva).
+`/diario` (mostra as notas de aprendizado mais recentes), `/sim` e
+`/não` (aprova ou corrige a última tentativa de fala pendente),
+`/sair` (encerra e salva). De vez em quando, depois de uma resposta, o
+ser tenta falar algo por conta própria -- corrija com `/não` se não
+fizer sentido, ou simplesmente continue a conversa (conta como aceite).
 
 O estado persiste em `estado/ser.json` (ignorado pelo git -- é o estado
 de uma instância local, não algo para versionar).
